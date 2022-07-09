@@ -1,0 +1,37 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet author="Ilia_Klishin" id="create_type_primary_skill">
+        <sql>
+            CREATE TYPE PRIMARY_SKILL AS ENUM ('JAVA', 'C_PLUS_PLUS', 'PYTHON', 'DOTNET', 'JAVASCRIPT');
+        </sql>
+        <rollback>
+            DROP TYPE IF EXISTS PRIMARY_SKILL;
+        </rollback>
+    </changeSet>
+
+    <changeSet author="Ilia_Klishin" id="create_table_students">
+        <createTable tableName="students">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="students_pkey"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="primary_skill" type="PRIMARY_SKILL">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Ilia_Klishin" id="create_students_foreign_key_constraints">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="students"
+                                 constraintName="students_user_id_fkey" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>

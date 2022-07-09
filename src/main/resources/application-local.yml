@@ -1,0 +1,55 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:15432/exams
+    username: postgres
+    password: postgres
+    initialization-mode: always
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        default_schema: exams
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: your-client-id
+            clientSecret: your-client-secret
+            client-authentication-method: basic
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+
+  liquibase:
+    change-log: classpath:db/changelog.xml
+    default-schema: exams
+
+cookies:
+  jwt-cookie-name: jwt_token
+
+token:
+  lifetime-millis: 180000
+
+logging:
+  level:
+    ROOT: INFO
+    org.hibernate: DEBUG
+    org.springframework: debug
+    com.exam: INFO
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus, liquibase

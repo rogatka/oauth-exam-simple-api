@@ -1,0 +1,41 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet author="Ilia_Klishin" id="create_table_subjects">
+        <createTable tableName="subjects">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="subjects_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Ilia_Klishin" id="create_table_subject_tutor">
+        <createTable tableName="subject_tutor">
+            <column name="subject_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tutor_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Ilia_Klishin" id="create_subject_tutor_foreign_keys">
+        <addForeignKeyConstraint baseColumnNames="subject_id" baseTableName="subject_tutor"
+                                 constraintName="subject_tutor_subject_id_fkey" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="subjects" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="tutor_id" baseTableName="subject_tutor"
+                                 constraintName="subject_tutor_tutor_id_fkey" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="tutors" validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>

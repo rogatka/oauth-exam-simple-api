@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  postgresql:
+     container_name: exams-docker-db
+     image: postgres:13.3
+     restart: on-failure
+     environment:
+       POSTGRES_DB: exams
+       POSTGRES_USER: postgres
+       POSTGRES_PASSWORD: postgres
+     ports:
+       - "15432:5432"
+     volumes:
+       - exams-docker-db-data:/var/lib/postgresql/data/
+       - ./:/docker-entrypoint-initdb.d/
+     networks:
+       - exams-docker-db-network
+
+volumes:
+  exams-docker-db-data:
+    name: exams-docker-db-data
+
+networks:
+  exams-docker-db-network:
+    name: exams-docker-db-network

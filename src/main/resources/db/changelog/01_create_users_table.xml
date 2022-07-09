@@ -1,0 +1,56 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet author="Ilia_Klishin" id="create_type_authority">
+        <sql>
+            CREATE TYPE AUTHORITY AS ENUM ('USER', 'ADMIN');
+        </sql>
+        <rollback>
+            DROP TYPE IF EXISTS AUTHORITY;
+        </rollback>
+    </changeSet>
+
+    <changeSet author="Ilia_Klishin" id="create_table_users">
+        <createTable tableName="users">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="user_pkey"/>
+            </column>
+            <column name="email" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="birth_date" type="DATE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Ilia_Klishin" id="create_table_user_authority">
+        <createTable tableName="user_authority">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="user_authority_pkey"/>
+            </column>
+            <column name="authority" type="AUTHORITY">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="user_authority_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Ilia_Klishin" id="create_foreign_key_constraints">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_authority"
+                                 constraintName="user_authority_user_id_fkey" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>

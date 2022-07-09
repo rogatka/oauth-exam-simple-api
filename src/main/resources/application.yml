@@ -1,0 +1,55 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    initialization-mode: always
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: ${SHOW_SQL}
+    properties:
+      hibernate:
+        default_schema: exams
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: ${OAUTH_GOOGLE_CLIENT_ID}
+            clientSecret: ${OAUTH_GOOGLE_CLIENT_SECRET}
+            client-authentication-method: ${OAUTH_GOOGLE_CLIENT_AUTHENTICATION_METHOD}
+            redirect-uri: ${OAUTH_GOOGLE_REDIRECT_URI}
+
+  liquibase:
+    change-log: classpath:db/changelog.xml
+    default-schema: exams
+
+cookies:
+  jwt-cookie-name: ${JWT_COOKIE_NAME}
+
+token:
+  lifetime-millis: ${JWT_LIFETIME_MILLIS}
+
+logging:
+  level:
+    ROOT: INFO
+    org.hibernate: ${LOGGING_LEVEL_HIBERNATE}
+    org.springframework: ${LOGGING_LEVEL_SPRING}
+    com.exam: ${LOGGING_LEVEL_APP}
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus, liquibase

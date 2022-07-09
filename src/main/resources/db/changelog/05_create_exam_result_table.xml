@@ -1,0 +1,44 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet author="Ilia_Klishin" id="create_table_exam_result">
+        <createTable tableName="exam_result">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="exam_result_pkey"/>
+            </column>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mark" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="exam_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Ilia_Klishin" id="add_mark_check_constraint">
+        <sql>
+            ALTER TABLE exam_result ADD CONSTRAINT exam_result_mark_check CHECK (mark &gt;= 0 AND mark &lt;= 10)
+        </sql>
+    </changeSet>
+
+    <changeSet author="Ilia_Klishin" id="create_exam_result_foreign_keys">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="exam_result"
+                                 constraintName="exam_result_student_id_fkey" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="students" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="subject_id" baseTableName="exam_result"
+                                 constraintName="exam_result_subject_id_fkey" deferrable="false"
+                                 initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="subjects" validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>
