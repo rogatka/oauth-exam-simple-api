@@ -2,72 +2,69 @@ package com.exam.exams.service.impl;
 
 import com.exam.common.exception.StudentAlreadyExistsException;
 import com.exam.common.exception.StudentNotFoundException;
-import com.exam.exams.model.Student;
-import com.exam.exams.model.dto.StudentCreateDto;
-import com.exam.exams.model.dto.StudentDto;
-import com.exam.exams.model.dto.StudentUpdateDto;
 import com.exam.exams.mapper.StudentMapper;
-import com.exam.exams.mapper.UserMapper;
+import com.exam.exams.model.Student;
 import com.exam.exams.repository.StudentRepository;
 import com.exam.exams.service.StudentService;
 import com.exam.exams.service.UserService;
+import com.exam.exams.web.request.StudentCreateRequest;
+import com.exam.exams.web.request.StudentUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
 
     private final UserService userService;
+
     private final StudentRepository studentRepository;
+
     private final StudentMapper studentMapper;
-    private final UserMapper userMapper;
 
     @Override
-    public StudentDto create(StudentCreateDto studentCreateDto) {
-        var existingUserDto = userService.findById(studentCreateDto.getUserId());
-        if (studentRepository.findByUserId(existingUserDto.getId()).isEmpty()) {
-            var mappedStudent = studentMapper.map(studentCreateDto);
-            mappedStudent.setUser(userMapper.map(existingUserDto));
-            return studentMapper.map(studentRepository.save(mappedStudent));
+    public Student create(StudentCreateRequest studentCreateRequest) {
+        Long userId = studentCreateRequest.getUserId();
+        var existingUser = userService.findById(userId);
+        if (studentRepository.findByUserId(existingUser.getId()).isEmpty()) {
+            var mappedStudent = studentMapper.map(studentCreateRequest);
+            mappedStudent.setUser(existingUser);
+            return studentRepository.save(mappedStudent);
         }
-        throw new StudentAlreadyExistsException(studentCreateDto.getUserId());
+        log.debug("User with id = {} is already a student", userId);
+        throw new StudentAlreadyExistsException(userId);
     }
 
     @Override
-    public StudentDto findById(Long id) {
-        return studentMapper.map(findStudentById(id));
+    public Student findById(Long id) {
+        return studentRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.debug("Student with id = {} not found", id);
+                    throw new StudentNotFoundException(id);
+                });
     }
 
     @Override
-    public List<StudentDto> findAll() {
-        return studentMapper.map(studentRepository.findAll());
+    public List<Student> findAll() {
+        return studentRepository.findAll();
     }
 
     @Override
-    public StudentDto update(Long id, StudentUpdateDto studentUpdateDto) {
-        var existingStudent = findStudentById(id);
-        var mappedStudent = studentMapper.map(studentUpdateDto, existingStudent);
-        var updatedStudent = studentRepository.save(mappedStudent);
-        return studentMapper.map(updatedStudent);
+    public Student update(Long id, StudentUpdateRequest studentUpdateRequest) {
+        var existingStudent = findById(id);
+        var mappedStudent = studentMapper.map(studentUpdateRequest, existingStudent);
+        return studentRepository.save(mappedStudent);
     }
 
     @Transactional
     @Override
     public void delete(Long id) {
-        validateExists(id);
+        findById(id);
         studentRepository.deleteById(id);
-    }
-
-    private void validateExists(Long id) {
-        findStudentById(id);
-    }
-
-    private Student findStudentById(Long id) {
-        return studentRepository.findById(id)
-                .orElseThrow(() -> new StudentNotFoundException(id));
     }
 }

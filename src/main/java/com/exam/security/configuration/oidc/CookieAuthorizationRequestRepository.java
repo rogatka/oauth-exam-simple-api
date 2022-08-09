@@ -1,4 +1,4 @@
-package com.exam.security.service;
+package com.exam.security.configuration.oidc;
 
 import com.exam.common.utils.HttpHelper;
 import com.nimbusds.oauth2.sdk.util.StringUtils;

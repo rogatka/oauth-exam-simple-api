@@ -1,22 +1,22 @@
 package com.exam.exams.service;
 
-import com.exam.exams.model.dto.UserCreateDto;
-import com.exam.exams.model.dto.UserDto;
-import com.exam.exams.model.dto.UserUpdateDto;
+import com.exam.exams.model.User;
+import com.exam.exams.web.request.UserCreateRequest;
+import com.exam.exams.web.request.UserUpdateRequest;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    UserDto create(UserCreateDto userCreateDto);
+    User create(UserCreateRequest userCreateRequest);
 
-    UserDto findById(Long id);
+    User findById(Long id);
 
-    Optional<UserDto> findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
-    List<UserDto> findAll();
+    List<User> findAll();
 
-    UserDto update(Long id, UserUpdateDto userUpdateDto);
+    User update(Long id, UserUpdateRequest userUpdateRequest);
 
     void delete(Long id);
 }

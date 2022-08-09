@@ -1,23 +1,23 @@
 package com.exam.exams.service;
 
-import com.exam.exams.model.dto.SubjectCreateDto;
-import com.exam.exams.model.dto.SubjectDto;
-import com.exam.exams.model.dto.SubjectUpdateDto;
+import com.exam.exams.model.Subject;
+import com.exam.exams.web.request.SubjectCreateRequest;
+import com.exam.exams.web.request.SubjectUpdateRequest;
 
 import java.util.List;
 
 public interface SubjectService {
-    List<SubjectDto> findAll();
+    List<Subject> findAll();
 
-    SubjectDto findById(Long id);
+    Subject findById(Long id);
 
-    SubjectDto assignTutor(Long subjectId, Long tutorId);
+    Subject assignTutor(Long subjectId, Long tutorId);
 
-    SubjectDto removeTutor(Long subjectId, Long tutorId);
+    Subject removeTutor(Long subjectId, Long tutorId);
 
-    SubjectDto create(SubjectCreateDto subjectCreateDto);
+    Subject create(SubjectCreateRequest subjectCreateRequest);
 
-    SubjectDto update(Long id, SubjectUpdateDto subjectUpdateDto);
+    Subject update(Long id, SubjectUpdateRequest subjectUpdateRequest);
 
     void delete(Long id);
 }

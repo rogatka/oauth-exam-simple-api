@@ -1,4 +1,4 @@
-package com.exam.exams.model.dto;
+package com.exam.exams.web.response;
 
 import com.exam.exams.model.Authority;
 import lombok.Data;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
-public class UserDto {
+public class UserResponse {
     private Long id;
     private String email;
     private String firstName;

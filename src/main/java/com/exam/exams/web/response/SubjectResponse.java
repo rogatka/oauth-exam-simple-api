@@ -1,13 +1,13 @@
-package com.exam.exams.model.dto;
+package com.exam.exams.web.response;
 
 import lombok.Data;
 
 import java.util.Set;
 
 @Data
-public class SubjectDto {
+public class SubjectResponse {
     private Long id;
     private String name;
     private String description;
-    private Set<TutorDto> tutors;
+    private Set<TutorResponse> tutors;
 }

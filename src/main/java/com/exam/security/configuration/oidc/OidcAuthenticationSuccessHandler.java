@@ -1,4 +1,4 @@
-package com.exam.security.service;
+package com.exam.security.configuration.oidc;
 
 import com.exam.security.model.UserPrincipal;
 import com.exam.security.configuration.properties.CookieProperties;

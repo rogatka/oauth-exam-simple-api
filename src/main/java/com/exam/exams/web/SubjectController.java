@@ -1,9 +1,11 @@
-package com.exam.exams.controller;
+package com.exam.exams.web;
 
-import com.exam.exams.model.dto.SubjectCreateDto;
-import com.exam.exams.model.dto.SubjectDto;
-import com.exam.exams.model.dto.SubjectUpdateDto;
+import com.exam.exams.mapper.SubjectMapper;
+import com.exam.exams.model.Subject;
 import com.exam.exams.service.SubjectService;
+import com.exam.exams.web.request.SubjectCreateRequest;
+import com.exam.exams.web.request.SubjectUpdateRequest;
+import com.exam.exams.web.response.SubjectResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -30,50 +32,58 @@ public class SubjectController {
 
     private final SubjectService subjectService;
 
+    private final SubjectMapper subjectMapper;
+
 
     @Operation(description = "Find subject by id")
     @GetMapping("/{id}")
-    public ResponseEntity<SubjectDto> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(subjectService.findById(id));
+    public ResponseEntity<SubjectResponse> findById(@PathVariable Long id) {
+        Subject subject = subjectService.findById(id);
+        return ResponseEntity.ok(subjectMapper.map(subject));
     }
 
     @Operation(description = "Find all subjects")
     @GetMapping
-    public ResponseEntity<List<SubjectDto>> findAll() {
-        return ResponseEntity.ok(subjectService.findAll());
+    public ResponseEntity<List<SubjectResponse>> findAll() {
+        List<Subject> subjects = subjectService.findAll();
+        return ResponseEntity.ok(subjectMapper.map(subjects));
     }
 
     @Operation(description = "Add new subject")
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<SubjectDto> create(@Valid @RequestBody SubjectCreateDto subjectCreateDto) {
+    public ResponseEntity<SubjectResponse> create(@Valid @RequestBody SubjectCreateRequest subjectCreateRequest) {
+        Subject createdSubject = subjectService.create(subjectCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(subjectService.create(subjectCreateDto));
+                .body(subjectMapper.map(createdSubject));
     }
 
     @Operation(description = "Update subject by id")
     @PutMapping("/{id}")
     @PreAuthorize("@subjectAccessService.isSubjectTutor(#id)")
-    public ResponseEntity<SubjectDto> update(@PathVariable Long id,
-                                             @Valid @RequestBody SubjectUpdateDto subjectUpdateDto) {
-        return ResponseEntity.ok(subjectService.update(id, subjectUpdateDto));
+    public ResponseEntity<SubjectResponse> update(@PathVariable Long id,
+                                                  @Valid @RequestBody SubjectUpdateRequest subjectUpdateRequest) {
+        Subject updatedSubject = subjectService.update(id, subjectUpdateRequest);
+        return ResponseEntity.ok(subjectMapper.map(updatedSubject));
     }
 
     @Operation(description = "Assign tutor to subject")
     @PostMapping("/{subjectId}/tutors/{tutorId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<SubjectDto> assignTutor(@PathVariable Long subjectId,
-                                                  @PathVariable Long tutorId) {
+    public ResponseEntity<SubjectResponse> assignTutor(@PathVariable Long subjectId,
+                                                       @PathVariable Long tutorId) {
+        Subject subjectWithTutorAssigned = subjectService.assignTutor(subjectId, tutorId);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(subjectService.assignTutor(subjectId, tutorId));
+                .body(subjectMapper.map(subjectWithTutorAssigned));
     }
 
     @Operation(description = "Remove tutor from subject's  tutors")
     @DeleteMapping("/{subjectId}/tutors/{tutorId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<SubjectDto> removeTutor(@PathVariable Long subjectId,
-                                                  @PathVariable Long tutorId) {
-        return ResponseEntity.ok(subjectService.removeTutor(subjectId, tutorId));
+    public ResponseEntity<SubjectResponse> removeTutor(@PathVariable Long subjectId,
+                                                       @PathVariable Long tutorId) {
+        Subject subjectWithTutorRemoved = subjectService.removeTutor(subjectId, tutorId);
+        return ResponseEntity.ok(subjectMapper.map(subjectWithTutorRemoved));
     }
 
     @Operation(description = "Delete subject")

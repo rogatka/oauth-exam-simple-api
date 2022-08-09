@@ -1,8 +1,10 @@
-package com.exam.exams.controller;
+package com.exam.exams.web;
 
-import com.exam.exams.model.dto.StudentCreateDto;
-import com.exam.exams.model.dto.StudentDto;
-import com.exam.exams.model.dto.StudentUpdateDto;
+import com.exam.exams.mapper.StudentMapper;
+import com.exam.exams.model.Student;
+import com.exam.exams.web.request.StudentCreateRequest;
+import com.exam.exams.web.response.StudentResponse;
+import com.exam.exams.web.request.StudentUpdateRequest;
 import com.exam.exams.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,32 +32,38 @@ public class StudentController {
 
     private final StudentService studentService;
 
+    private final StudentMapper studentMapper;
+
     @Operation(description = "Find student by id")
     @GetMapping("/{id}")
-    public ResponseEntity<StudentDto> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(studentService.findById(id));
+    public ResponseEntity<StudentResponse> findById(@PathVariable Long id) {
+        Student student = studentService.findById(id);
+        return ResponseEntity.ok(studentMapper.map(student));
     }
 
     @Operation(description = "Find all students")
     @GetMapping
-    public ResponseEntity<List<StudentDto>> findAll() {
-        return ResponseEntity.ok(studentService.findAll());
+    public ResponseEntity<List<StudentResponse>> findAll() {
+        List<Student> students = studentService.findAll();
+        return ResponseEntity.ok(studentMapper.map(students));
     }
 
     @Operation(description = "Add new student")
     @PostMapping
     @PreAuthorize("@userPrincipalService.isTutor()")
-    public ResponseEntity<StudentDto> create(@Valid @RequestBody StudentCreateDto studentCreateDto) {
+    public ResponseEntity<StudentResponse> create(@Valid @RequestBody StudentCreateRequest studentCreateRequest) {
+        Student createdStudent = studentService.create(studentCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(studentService.create(studentCreateDto));
+                .body(studentMapper.map(createdStudent));
     }
 
     @Operation(description = "Update student by id")
     @PutMapping("/{id}")
     @PreAuthorize("@userPrincipalService.isTutor()")
-    public ResponseEntity<StudentDto> update(@PathVariable Long id,
-                                             @Valid @RequestBody StudentUpdateDto studentUpdateDto) {
-        return ResponseEntity.ok(studentService.update(id, studentUpdateDto));
+    public ResponseEntity<StudentResponse> update(@PathVariable Long id,
+                                                  @Valid @RequestBody StudentUpdateRequest studentUpdateRequest) {
+        Student updatedStudent = studentService.update(id, studentUpdateRequest);
+        return ResponseEntity.ok(studentMapper.map(updatedStudent));
     }
 
     @Operation(description = "Delete student by id")

@@ -1,6 +1,6 @@
 package com.exam.security.configuration;
 
-import com.exam.security.service.CustomOidcUserService;
+import com.exam.security.configuration.oidc.CustomOidcUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;

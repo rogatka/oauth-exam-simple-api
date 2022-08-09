@@ -1,19 +1,19 @@
 package com.exam.exams.service;
 
-import com.exam.exams.model.dto.ExamResultCreateDto;
-import com.exam.exams.model.dto.ExamResultDto;
-import com.exam.exams.model.dto.ExamResultUpdateDto;
+import com.exam.exams.model.ExamResult;
+import com.exam.exams.web.request.ExamResultCreateRequest;
+import com.exam.exams.web.request.ExamResultUpdateRequest;
 
 import java.util.List;
 
 public interface ExamResultService {
-    ExamResultDto create(ExamResultCreateDto examResultCreateDto);
+    ExamResult create(ExamResultCreateRequest examResultCreateRequest);
 
-    ExamResultDto update(Long id, ExamResultUpdateDto examResultUpdateDto);
+    ExamResult update(Long id, ExamResultUpdateRequest examResultUpdateRequest);
 
-    ExamResultDto findById(Long id);
+    ExamResult findById(Long id);
 
-    List<ExamResultDto> findAll();
+    List<ExamResult> findAll();
 
     void delete(Long id);
 }

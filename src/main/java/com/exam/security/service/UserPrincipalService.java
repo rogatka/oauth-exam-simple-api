@@ -1,6 +1,6 @@
 package com.exam.security.service;
 
-import com.exam.exams.repository.TutorRepository;
+import com.exam.exams.service.TutorService;
 import com.exam.security.model.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,7 +11,7 @@ import org.springframework.util.Assert;
 @RequiredArgsConstructor
 public class UserPrincipalService {
 
-    private final TutorRepository tutorRepository;
+    private final TutorService tutorService;
 
     public UserPrincipal getPrincipal() {
         var context = SecurityContextHolder.getContext();
@@ -22,7 +22,7 @@ public class UserPrincipalService {
     }
 
     public boolean isTutor() {
-        return tutorRepository.findByUserId(getId()).isPresent();
+        return tutorService.findByUserId(getId()).isPresent();
     }
 
     public Long getId() {

@@ -1,4 +1,4 @@
-package com.exam.exams.model.dto;
+package com.exam.exams.web.request;
 
 import com.exam.exams.model.PrimarySkill;
 import lombok.Data;
@@ -6,7 +6,9 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class StudentUpdateDto {
+public class StudentCreateRequest {
+    @NotNull
+    private Long userId;
     @NotNull
     private PrimarySkill primarySkill;
 }

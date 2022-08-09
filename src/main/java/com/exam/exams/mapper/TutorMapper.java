@@ -1,8 +1,8 @@
 package com.exam.exams.mapper;
 
 import com.exam.common.configuration.MapperConfiguration;
-import com.exam.exams.model.dto.TutorCreateDto;
-import com.exam.exams.model.dto.TutorDto;
+import com.exam.exams.web.request.TutorCreateRequest;
+import com.exam.exams.web.response.TutorResponse;
 import com.exam.exams.model.Tutor;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -11,10 +11,10 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", config = MapperConfiguration.class)
 public interface TutorMapper {
-    TutorDto map(Tutor tutor);
+    TutorResponse map(Tutor tutor);
 
     @Mapping(source = "userId", target = "user.id")
-    Tutor map(TutorCreateDto dto);
+    Tutor map(TutorCreateRequest dto);
 
-    List<TutorDto> map(List<Tutor> tutors);
+    List<TutorResponse> map(List<Tutor> tutors);
 }

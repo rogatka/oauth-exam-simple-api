@@ -1,9 +1,9 @@
 package com.exam.exams.mapper;
 
 import com.exam.common.configuration.MapperConfiguration;
-import com.exam.exams.model.dto.UserCreateDto;
-import com.exam.exams.model.dto.UserDto;
-import com.exam.exams.model.dto.UserUpdateDto;
+import com.exam.exams.web.request.UserCreateRequest;
+import com.exam.exams.web.response.UserResponse;
+import com.exam.exams.web.request.UserUpdateRequest;
 import com.exam.exams.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -12,13 +12,13 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", config = MapperConfiguration.class)
 public interface UserMapper {
-    List<UserDto> map(List<User> users);
+    List<UserResponse> map(List<User> users);
 
-    UserDto map(User user);
+    UserResponse map(User user);
 
-    User map(UserDto dto);
+    User map(UserResponse dto);
 
-    User map(UserCreateDto dto);
+    User map(UserCreateRequest dto);
 
-    User map(UserUpdateDto dto, @MappingTarget User user);
+    User map(UserUpdateRequest dto, @MappingTarget User user);
 }

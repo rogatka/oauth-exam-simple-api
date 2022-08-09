@@ -5,10 +5,10 @@ import com.exam.common.utils.HttpHelper;
 import com.exam.exams.repository.UserRepository;
 import com.exam.security.configuration.filter.TokenAuthenticationFilter;
 import com.exam.security.configuration.properties.CookieProperties;
-import com.exam.security.service.CookieAuthorizationRequestRepository;
-import com.exam.security.service.CustomOidcUserService;
-import com.exam.security.service.OidcAuthenticationFailureHandler;
-import com.exam.security.service.OidcAuthenticationSuccessHandler;
+import com.exam.security.configuration.oidc.CookieAuthorizationRequestRepository;
+import com.exam.security.configuration.oidc.CustomOidcUserService;
+import com.exam.security.configuration.oidc.OidcAuthenticationFailureHandler;
+import com.exam.security.configuration.oidc.OidcAuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Configuration;
@@ -57,7 +57,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
                 .sessionManagement(sm -> sm.sessionCreationPolicy(STATELESS))
                 .authorizeRequests(a -> a
-                        .antMatchers("/", "/actuator/**", "/swagger-ui/**", "error", "/webjars/**").permitAll()
+                        .antMatchers(
+                                "/",
+                                "/actuator/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "error",
+                                "/webjars/**")
+                        .permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login()

@@ -1,4 +1,4 @@
-package com.exam.exams.model.dto;
+package com.exam.common.exception;
 
 import lombok.Data;
 

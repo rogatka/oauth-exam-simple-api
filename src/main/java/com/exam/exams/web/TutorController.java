@@ -1,8 +1,10 @@
-package com.exam.exams.controller;
+package com.exam.exams.web;
 
-import com.exam.exams.model.dto.TutorCreateDto;
-import com.exam.exams.model.dto.TutorDto;
+import com.exam.exams.mapper.TutorMapper;
+import com.exam.exams.model.Tutor;
 import com.exam.exams.service.TutorService;
+import com.exam.exams.web.request.TutorCreateRequest;
+import com.exam.exams.web.response.TutorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -28,24 +30,29 @@ public class TutorController {
 
     private final TutorService tutorService;
 
+    private final TutorMapper tutorMapper;
+
     @Operation(description = "Find tutor by id")
     @GetMapping("/{id}")
-    public ResponseEntity<TutorDto> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(tutorService.findById(id));
+    public ResponseEntity<TutorResponse> findById(@PathVariable Long id) {
+        Tutor tutor = tutorService.findById(id);
+        return ResponseEntity.ok(tutorMapper.map(tutor));
     }
 
     @Operation(description = "Find all tutors")
     @GetMapping
-    public ResponseEntity<List<TutorDto>> findAll() {
-        return ResponseEntity.ok(tutorService.findAll());
+    public ResponseEntity<List<TutorResponse>> findAll() {
+        List<Tutor> tutors = tutorService.findAll();
+        return ResponseEntity.ok(tutorMapper.map(tutors));
     }
 
     @Operation(description = "Add new tutor")
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<TutorDto> create(@Valid @RequestBody TutorCreateDto tutorCreateDto) {
+    public ResponseEntity<TutorResponse> create(@Valid @RequestBody TutorCreateRequest tutorCreateRequest) {
+        Tutor createdTutor = tutorService.create(tutorCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(tutorService.create(tutorCreateDto));
+                .body(tutorMapper.map(createdTutor));
     }
 
     @Operation(description = "Update tutor by id")

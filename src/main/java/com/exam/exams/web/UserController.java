@@ -1,9 +1,11 @@
-package com.exam.exams.controller;
+package com.exam.exams.web;
 
-import com.exam.exams.model.dto.UserCreateDto;
-import com.exam.exams.model.dto.UserDto;
-import com.exam.exams.model.dto.UserUpdateDto;
+import com.exam.exams.mapper.UserMapper;
+import com.exam.exams.model.User;
 import com.exam.exams.service.UserService;
+import com.exam.exams.web.request.UserCreateRequest;
+import com.exam.exams.web.request.UserUpdateRequest;
+import com.exam.exams.web.response.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,8 @@ public class UserController {
 
     private final UserService userService;
 
+    private final UserMapper userMapper;
+
     @Operation(description = "Get oauth user info")
     @GetMapping("/me")
     public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
@@ -48,31 +52,35 @@ public class UserController {
     @Operation(description = "Find user by id")
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<UserDto> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.findById(id));
+    public ResponseEntity<UserResponse> findById(@PathVariable Long id) {
+        User user = userService.findById(id);
+        return ResponseEntity.ok(userMapper.map(user));
     }
 
     @Operation(description = "Find all users")
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<List<UserDto>> findAll() {
-        return ResponseEntity.ok(userService.findAll());
+    public ResponseEntity<List<UserResponse>> findAll() {
+        List<User> users = userService.findAll();
+        return ResponseEntity.ok(userMapper.map(users));
     }
 
     @Operation(description = "Create new user")
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<UserDto> create(@Valid @RequestBody UserCreateDto userCreateDto) {
+    public ResponseEntity<UserResponse> create(@Valid @RequestBody UserCreateRequest userCreateRequest) {
+        User createdUser = userService.create(userCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(userService.create(userCreateDto));
+                .body(userMapper.map(createdUser));
     }
 
     @Operation(description = "Update user by id")
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<UserDto> update(@PathVariable Long id,
-                                          @Valid @RequestBody UserUpdateDto userUpdateDto) {
-        return ResponseEntity.ok(userService.update(id, userUpdateDto));
+    public ResponseEntity<UserResponse> update(@PathVariable Long id,
+                                               @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
+        User updatedUser = userService.update(id, userUpdateRequest);
+        return ResponseEntity.ok(userMapper.map(updatedUser));
     }
 
     @Operation(description = "Delete user by id")

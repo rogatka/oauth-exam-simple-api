@@ -1,4 +1,4 @@
-package com.exam.security.service;
+package com.exam.security.configuration.oidc;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.AuthenticationException;

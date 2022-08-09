@@ -1,8 +1,10 @@
-package com.exam.exams.controller;
+package com.exam.exams.web;
 
-import com.exam.exams.model.dto.ExamResultCreateDto;
-import com.exam.exams.model.dto.ExamResultDto;
-import com.exam.exams.model.dto.ExamResultUpdateDto;
+import com.exam.exams.mapper.ExamResultMapper;
+import com.exam.exams.model.ExamResult;
+import com.exam.exams.web.request.ExamResultCreateRequest;
+import com.exam.exams.web.response.ExamResultResponse;
+import com.exam.exams.web.request.ExamResultUpdateRequest;
 import com.exam.exams.service.ExamResultService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,32 +32,38 @@ public class ExamResultController {
 
     private final ExamResultService examResultService;
 
+    private final ExamResultMapper examResultMapper;
+
     @Operation(description = "Find exam result by id")
     @GetMapping("/{id}")
-    public ResponseEntity<ExamResultDto> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(examResultService.findById(id));
+    public ResponseEntity<ExamResultResponse> findById(@PathVariable Long id) {
+        ExamResult examResult = examResultService.findById(id);
+        return ResponseEntity.ok(examResultMapper.map(examResult));
     }
 
     @Operation(description = "Find all exam results")
     @GetMapping
-    public ResponseEntity<List<ExamResultDto>> findAll() {
-        return ResponseEntity.ok(examResultService.findAll());
+    public ResponseEntity<List<ExamResultResponse>> findAll() {
+        List<ExamResult> examResults = examResultService.findAll();
+        return ResponseEntity.ok(examResultMapper.map(examResults));
     }
 
     @Operation(description = "Add new exam result")
     @PostMapping
     @PreAuthorize("@subjectAccessService.isSubjectTutor(#examResultCreateDto.subjectId)")
-    public ResponseEntity<ExamResultDto> create(@Valid @RequestBody ExamResultCreateDto examResultCreateDto) {
+    public ResponseEntity<ExamResultResponse> create(@Valid @RequestBody ExamResultCreateRequest examResultCreateRequest) {
+        ExamResult createdExamResult = examResultService.create(examResultCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(examResultService.create(examResultCreateDto));
+                .body(examResultMapper.map(createdExamResult));
     }
 
     @Operation(description = "Update exam result by id")
     @PutMapping("/{id}")
     @PreAuthorize("@userPrincipalService.isTutor()")
-    public ResponseEntity<ExamResultDto> update(@PathVariable Long id,
-                                                @Valid @RequestBody ExamResultUpdateDto examResultUpdateDto) {
-        return ResponseEntity.ok(examResultService.update(id, examResultUpdateDto));
+    public ResponseEntity<ExamResultResponse> update(@PathVariable Long id,
+                                                     @Valid @RequestBody ExamResultUpdateRequest examResultUpdateRequest) {
+        ExamResult updatedExamResult = examResultService.update(id, examResultUpdateRequest);
+        return ResponseEntity.ok(examResultMapper.map(updatedExamResult));
     }
 
     @Operation(description = "Delete exam result by id")

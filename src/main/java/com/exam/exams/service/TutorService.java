@@ -1,17 +1,20 @@
 package com.exam.exams.service;
 
-import com.exam.exams.model.dto.TutorCreateDto;
-import com.exam.exams.model.dto.TutorDto;
+import com.exam.exams.model.Tutor;
+import com.exam.exams.web.request.TutorCreateRequest;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TutorService {
 
-    TutorDto findById(Long id);
+    Tutor findById(Long id);
 
-    List<TutorDto> findAll();
+    List<Tutor> findAll();
 
-    TutorDto create(TutorCreateDto tutorCreateDto);
+    Tutor create(TutorCreateRequest tutorCreateRequest);
 
     void delete(Long id);
+
+    Optional<Tutor> findByUserId(Long userId);
 }

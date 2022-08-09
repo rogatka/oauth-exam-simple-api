@@ -1,19 +1,19 @@
 package com.exam.exams.service;
 
-import com.exam.exams.model.dto.StudentCreateDto;
-import com.exam.exams.model.dto.StudentDto;
-import com.exam.exams.model.dto.StudentUpdateDto;
+import com.exam.exams.model.Student;
+import com.exam.exams.web.request.StudentCreateRequest;
+import com.exam.exams.web.request.StudentUpdateRequest;
 
 import java.util.List;
 
 public interface StudentService {
-    StudentDto create(StudentCreateDto studentCreateDto);
+    Student create(StudentCreateRequest studentCreateRequest);
 
-    StudentDto findById(Long id);
+    Student findById(Long id);
 
-    List<StudentDto> findAll();
+    List<Student> findAll();
 
-    StudentDto update(Long id, StudentUpdateDto userUpdateDto);
+    Student update(Long id, StudentUpdateRequest userUpdateDto);
 
     void delete(Long id);
 }
